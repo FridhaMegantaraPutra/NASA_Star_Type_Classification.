@@ -1,6 +1,8 @@
+from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.metrics import confusion_matrix
 from sklearn import datasets, linear_model, metrics
 from sklearn.neighbors import KNeighborsClassifier
