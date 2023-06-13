@@ -1,27 +1,27 @@
-#!pip install streamlit --quiet
-import streamlit as st
-import pickle
-from PIL import Image
-import numpy as np
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn import preprocessing
-from sklearn.preprocessing import LabelEncoder
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn import datasets, linear_model, metrics
-from sklearn.metrics import  confusion_matrix
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import classification_report,confusion_matrix
-from sklearn.model_selection import cross_val_score
+from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn import datasets, linear_model, metrics
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn import preprocessing
+from sklearn.model_selection import train_test_split
+import pandas as pd
+import numpy as np
+from PIL import Image
+import pickle
+import streamlit as st
+k  # !pip install streamlit --quiet
 
 
 stars_ohe = pd.read_csv('FinalProcessed.csv')
 scaler = StandardScaler()
 
-stars_ohe_scaled = scaler.fit(stars_ohe.drop(['Type','Index'], axis = 1))
-stars_ohe_scaled = scaler.transform(stars_ohe.drop(['Type','Index'], axis = 1))
+stars_ohe_scaled = scaler.fit(stars_ohe.drop(['Type', 'Index'], axis=1))
+stars_ohe_scaled = scaler.transform(stars_ohe.drop(['Type', 'Index'], axis=1))
 
 cols = ['Temperature',
         'L',
@@ -40,18 +40,19 @@ cols = ['Temperature',
         'Spectral_Class_O']
 
 
-X = pd.DataFrame(stars_ohe_scaled, columns = cols)
+X = pd.DataFrame(stars_ohe_scaled, columns=cols)
 Y = stars_ohe['Type']
 
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, random_state = 42, test_size = 0.33)
+X_train, X_test, Y_train, Y_test = train_test_split(
+    X, Y, random_state=42, test_size=0.33)
 
 scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train) 
+X_train = scaler.fit_transform(X_train)
 X_test = scaler.fit_transform(X_test)
 
-model_knn_1 = KNeighborsClassifier(n_neighbors= 1)
+model_knn_1 = KNeighborsClassifier(n_neighbors=1)
 
-model_knn_5 = KNeighborsClassifier(n_neighbors= 10)
+model_knn_5 = KNeighborsClassifier(n_neighbors=10)
 
 model_knn_1.fit(X_train, Y_train)
 model_knn_5.fit(X_train, Y_train)
@@ -65,8 +66,10 @@ predict_knn_5 = model_knn_5.predict(X_test)
 # print(confusion_matrix(Y_test, predict_knn_1))
 # print(confusion_matrix(Y_test, predict_knn_5))
 
-print("For kNN model with n = 1\n*******************************************************\n", classification_report(Y_test,predict_knn_1))
-print("For kNN model with n = 5\n*******************************************************\n", classification_report(Y_test,predict_knn_5))
+print("For kNN model with n = 1\n*******************************************************\n",
+      classification_report(Y_test, predict_knn_1))
+print("For kNN model with n = 5\n*******************************************************\n",
+      classification_report(Y_test, predict_knn_5))
 
 # error_rate= []
 # for i in range(1,40):
@@ -82,7 +85,7 @@ print("For kNN model with n = 5\n***********************************************
 
 print(model_knn_5.score(X_test, Y_test))
 
-cv_scores = cross_val_score(model_knn_1, X, Y, cv = 10, scoring = 'accuracy')
+cv_scores = cross_val_score(model_knn_1, X, Y, cv=10, scoring='accuracy')
 print(cv_scores)
 
 avg_cv_scores = np.mean(cv_scores)
@@ -104,10 +107,11 @@ print(avg_cv_scores)
 # plt.ylabel('Cross-Validated Accuracy')
 # plt.show()
 
-params={'n_neighbors': range(1,40)}
+params = {'n_neighbors': range(1, 40)}
 params
 
-model_knn_grid = GridSearchCV(KNeighborsClassifier(), params, cv=10, scoring='accuracy')
+model_knn_grid = GridSearchCV(
+    KNeighborsClassifier(), params, cv=10, scoring='accuracy')
 model_knn_grid.fit(X_train, Y_train)
 
 GridSearchCV(cv=10, estimator=KNeighborsClassifier(),
@@ -117,18 +121,17 @@ print(model_knn_grid.best_estimator_)
 print(model_knn_grid.best_score_)
 
 
-
 st.header("NASA Star Type Classification:")
 image = Image.open('nasaimage.jpeg')
 st.image(image, use_column_width=True)
 st.write("Please insert values, to get Star type class prediction")
 
 
-Temperature_ip = st.slider('Temperature:', -0.92 ,3.0)
+Temperature_ip = st.slider('Temperature:', -0.92, 3.0)
 L_ip = st.slider('Luminosity:', -0.6, 4.3)
-R_ip = st.slider('Relative radius',-0.4, 3.5)
+R_ip = st.slider('Relative radius', -0.4, 3.5)
 A_M_ip = st.slider('Absolute Mass:', -1.5, 3.5)
-#Type_ip = st.radio("Type:", ("-0.47" ,"2.12"))
+# Type_ip = st.radio("Type:", ("-0.47" ,"2.12"))
 Color_Blue_White_ip = st.radio("Is the color blue-white?", ["0", "1"])
 Color_Orange_ip = st.radio("Is the color orange?", ["0", "1"])
 Color_Red_ip = st.radio("Is the color red?", ["0", "1"])
@@ -145,34 +148,36 @@ data = {'Temperature': Temperature_ip,
         'Luminosity': L_ip,
         'Relative radius': R_ip,
         'Absolute magnitude': A_M_ip,
-        'Color_Blue_White' : Color_Blue_White_ip,
-        'Color_Orange' : Color_Orange_ip,
-        'Color_Red' : Color_Red_ip,
-        'Color_White' : Color_White_ip,
-        'Color_White_Yellow' : Color_White_Yellow_ip,
-        'Class_B' : Class_B_ip,
-        'Class_F' : Class_F_ip,
-        'Class_G' : Class_G_ip,
-        'Class_K' : Class_K_ip,
-        'Class_M' : Class_M_ip,
-        'Class_O' : Class_O_ip
+        'Color_Blue_White': Color_Blue_White_ip,
+        'Color_Orange': Color_Orange_ip,
+        'Color_Red': Color_Red_ip,
+        'Color_White': Color_White_ip,
+        'Color_White_Yellow': Color_White_Yellow_ip,
+        'Class_B': Class_B_ip,
+        'Class_F': Class_F_ip,
+        'Class_G': Class_G_ip,
+        'Class_K': Class_K_ip,
+        'Class_M': Class_M_ip,
+        'Class_O': Class_O_ip
         }
 
 features = pd.DataFrame(data, index=[0])
 print(features.shape, X_train.shape)
 
 pred_proba = model_knn_5.predict_proba(features)
-#or
+# or
 prediction = model_knn_5.predict(features)
 
-st.subheader('Prediction Percentages:')  
-st.write('**Probablity of Star Type being 0 i.e. Red Dwarf is ( in % )**:',pred_proba[0][0]*100)
-st.write('**Probablity of Star Type being 1 i.e. Brown Dwarf is ( in % )**:',pred_proba[0][1]*100)
-st.write('**Probablity of Star Type being 2 i.e. White Dwarf is ( in % )**:',pred_proba[0][2]*100)
-st.write('**Probablity of Star Type being 3 i.e. Main sequence is ( in % )**:',pred_proba[0][3]*100)
-st.write('**Probablity of Star Type being 4 i.e. Super Giants is ( in % )**:',pred_proba[0][4]*100)
-st.write('**Probablity of Star Type being 5 i.e. Hyper Giants is ( in % )**:',pred_proba[0][5]*100)
-
-
-
-
+st.subheader('Prediction Percentages:')
+st.write('**Probablity of Star Type being 0 i.e. Red Dwarf is ( in % )**:',
+         pred_proba[0][0]*100)
+st.write('**Probablity of Star Type being 1 i.e. Brown Dwarf is ( in % )**:',
+         pred_proba[0][1]*100)
+st.write('**Probablity of Star Type being 2 i.e. White Dwarf is ( in % )**:',
+         pred_proba[0][2]*100)
+st.write('**Probablity of Star Type being 3 i.e. Main sequence is ( in % )**:',
+         pred_proba[0][3]*100)
+st.write('**Probablity of Star Type being 4 i.e. Super Giants is ( in % )**:',
+         pred_proba[0][4]*100)
+st.write('**Probablity of Star Type being 5 i.e. Hyper Giants is ( in % )**:',
+         pred_proba[0][5]*100)
