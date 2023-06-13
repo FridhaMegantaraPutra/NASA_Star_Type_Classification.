@@ -1,20 +1,20 @@
-from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import cross_val_score
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-from sklearn.metrics import confusion_matrix
-from sklearn import datasets, linear_model, metrics
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.preprocessing import LabelEncoder
-from sklearn import preprocessing
-from sklearn.model_selection import train_test_split
-import pandas as pd
-import numpy as np
-from PIL import Image
-import pickle
+#!pip install streamlit --quiet
 import streamlit as st
-k  # !pip install streamlit --quiet
+import pickle
+from PIL import Image
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn import preprocessing
+from sklearn.preprocessing import LabelEncoder
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import datasets, linear_model, metrics
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import GridSearchCV
 
 
 stars_ohe = pd.read_csv('FinalProcessed.csv')
@@ -108,7 +108,6 @@ print(avg_cv_scores)
 # plt.show()
 
 params = {'n_neighbors': range(1, 40)}
-params
 
 model_knn_grid = GridSearchCV(
     KNeighborsClassifier(), params, cv=10, scoring='accuracy')
